@@ -20,8 +20,12 @@ app.post('/generate', async (req, res) => {
     });
     res.json(response.data);
   } catch (error) {
+    console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-app.listen(process.env.PORT || 3000);
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
