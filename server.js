@@ -3,11 +3,23 @@ const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('/generate', cors());
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ status: 'Blueprint API running' });
+});
 
 app.post('/generate', async (req, res) => {
   try {
+    console.log('Received request');
     const response = await axios({
       method: 'POST',
       url: 'https://api.anthropic.com/v1/messages',
@@ -18,6 +30,7 @@ app.post('/generate', async (req, res) => {
       },
       data: req.body,
     });
+    console.log('Success');
     res.json(response.data);
   } catch (error) {
     console.error('Error:', error.message);
