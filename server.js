@@ -4,7 +4,12 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
 
@@ -14,7 +19,7 @@ app.get('/', (req, res) => {
 
 app.post('/generate', async (req, res) => {
   try {
-    const { prompt } = req.body;
+    console.log('Received request');
     const response = await axios({
       method: 'POST',
       url: 'https://api.anthropic.com/v1/messages',
@@ -23,16 +28,13 @@ app.post('/generate', async (req, res) => {
         'anthropic-version': '2023-06-01',
         'Content-Type': 'application/json',
       },
-      data: {
-        model: 'claude-sonnet-4-5-20251001',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }]
-      },
+      data: req.body,
       timeout: 120000
     });
+    console.log('Success');
     res.json(response.data);
   } catch (error) {
-    console.error('Generate error:', error.message);
+    console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
@@ -50,6 +52,7 @@ app.post('/contact', async (req, res) => {
       data: req.body,
       timeout: 15000
     });
+    console.log('Contact created');
     res.json(response.data);
   } catch (error) {
     console.error('Contact error:', error.message);
