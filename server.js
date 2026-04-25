@@ -11,7 +11,7 @@ app.use(cors({
 }));
 
 app.options('/generate', cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json({ status: 'Blueprint API running' });
@@ -20,7 +20,6 @@ app.get('/', (req, res) => {
 app.post('/generate', async (req, res) => {
   try {
     console.log('Received request');
-    const { prompt, key } = req.body;
     const response = await axios({
       method: 'POST',
       url: 'https://api.anthropic.com/v1/messages',
@@ -29,12 +28,7 @@ app.post('/generate', async (req, res) => {
         'anthropic-version': '2023-06-01',
         'Content-Type': 'application/json',
       },
-      data: {
-        model: 'claude-sonnet-4-5-20251001',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }]
-      },
-      timeout: 120000
+      data: req.body,
     });
     console.log('Success');
     res.json(response.data);
