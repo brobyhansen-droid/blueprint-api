@@ -30,7 +30,7 @@ app.post('/generate', async (req, res) => {
         'Content-Type': 'application/json',
       },
       data: {
-        model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-4-5-20251001',
         max_tokens: 4000,
         messages: [{ role: 'user', content: prompt }]
       },
